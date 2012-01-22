@@ -101,16 +101,84 @@ struct trie {
     	    	enum_substrings_aux(aux_node, str);
     	    }
     	    else{
-
+    	    	for(int i = 1; i <= str.size(); i++){
+    	    		for(int j = 1; j <= str.size() - i; j++){
+    	    	        substrings.push_back(str.substr(i,j));
+    	    	    }
+    	    	}
+    	    	/*
     	   		for(int i = 1; i < str.size(); i++){
     	   			substrings.push_back(str.substr(i));
     	   		}
-
+    	    	 */
     	   		str = str.substr(0, str.size() - 1);
     	    }
     	} //end for
     	str.clear();
     } //end enum_substrings_aux
+
+
+
+        void print() {
+            	trie *pNode = this;
+            	string str = "";
+            	for (child::const_iterator itr = pNode->child_map.begin(); itr != pNode->child_map.end(); ++itr) {
+            		char letter = (*itr).first;
+            		 if(letter == '\0'){
+            			 cout << endl;
+            			 str.clear();
+            		 }else{
+            			 //cout << letter << ' ';
+            			 str += letter;
+            		 }
+            		trie *node;
+            		node = pNode->child_map[letter];
+            		if(!(node->child_map.empty())){
+            			print_aux(node, str);
+            		}else{
+            	   		str.clear();
+            		}
+            	}
+            }
+            void print_aux(trie * node, string& str){
+            	if(node == NULL){
+            		return;
+            	}
+            	int round = 0;
+            	for ( child::const_iterator itr = node->child_map.begin(); itr != node->child_map.end(); ++itr) {
+            		char letter = (*itr).first;
+
+            	    if(letter == '\0'){
+            	    	//cout << endl;
+            	    	str.clear();
+            	    }else{
+            	    	//cout << letter << ' ';
+            	    	str += letter;
+            	    	//cout << str << ' ';
+            	    }
+            	    trie * aux_node;
+            	    aux_node = node->child_map[letter];
+            	    if(!(aux_node->child_map.empty())){
+            	    	print_aux(aux_node, str);
+            	    	//str = str.substr(0, (str.size() - 1));
+            	    }
+            	    else{
+            	   		//str.clear();
+
+            	   		for(int i = 1; i <= str.size(); i++){
+            	   		   //cout << str.substr(i) << ' ';
+            	   			round++;
+            	   			cout << round << ' ';
+            	   		   for(int j = 1; j <= str.size() - i; j++){
+            	   			   cout << str.substr(i,j) << ' ';
+            	   			   //cout << str.substr(3,1) << ' ';
+            	   		   }
+            	   		}
+            	   		str = str.substr(0, str.size() - 1);
+            	    }
+            	}
+            }
+
 };
 
 
@@ -159,11 +227,13 @@ int main (){
 
 	}
 
+
+	trie.print();
 	trie.enum_substrings(substrings);
 	sort(substrings.begin(), substrings.end());
 	it = unique(substrings.begin(), substrings.end());
 	substrings.resize(it - substrings.begin());
-
+	print_elements(substrings);
 
 	cin >> q; //get q
 
